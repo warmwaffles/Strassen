@@ -8,6 +8,11 @@ public class LinkedMatrixNode {
 	private int val;
 	public LinkedMatrixNode north, east, south, west;
 
+	/**
+	 * Builds a simple node that is not linked up with anything
+	 *
+	 * @param val - The value the node will hold
+	 */
 	public LinkedMatrixNode(int val) {
 		this.val = val;
 		north    = null;
@@ -23,7 +28,6 @@ public class LinkedMatrixNode {
 	public void set_value(int val) {
 		this.val = val;
 	}
-
 
 	@Override
 	public String toString(){

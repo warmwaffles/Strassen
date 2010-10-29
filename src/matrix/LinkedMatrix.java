@@ -3,7 +3,7 @@ package matrix;
 /**
  * Implementing Strassen's method via linked lists
  *
- * @author Matthew Johnston (aka WarmWaffles)
+ * @author Matthew Johnston
  */
 public class LinkedMatrix {
 
@@ -92,6 +92,10 @@ public class LinkedMatrix {
 
 	}
 
+	/**
+	 * Goes through and computes the size of the matrix and sets the width and
+	 * height appropriately.
+	 */
 	private void compute_size() {
 		LinkedMatrixNode t = root;
 		height = 0;
@@ -109,6 +113,12 @@ public class LinkedMatrix {
 		}
 	}
 
+	/**
+	 * Splits the matrix in half vertically. It removes the links from the right
+	 * half and left half. The right half is returned while the left half remains
+	 *
+	 * @return
+	 */
 	public LinkedMatrix split_vertical() {
 		int size = width / 2;
 		LinkedMatrixNode t = root;
@@ -128,7 +138,13 @@ public class LinkedMatrix {
 		return new LinkedMatrix(new_root);
 	}
 
-	public LinkedMatrix split_horizontal() {
+	/**
+	 * Splits the matrix in half horizontally. It removes the links on the upper
+	 * half from the lower half. The lower half is returned as a new Matrix
+	 *
+	 * @return
+	 */
+	private LinkedMatrix split_horizontal() {
 		int size = height / 2;
 
 		LinkedMatrixNode t = root;
@@ -169,6 +185,7 @@ public class LinkedMatrix {
 			g = y.root.south.value();      // y[1][0]
 			h = y.root.south.east.value(); // y[1][1]
 
+			// TODO: Optimize these math equations
 			int p1, p2, p3, p4, p5, p6, p7;
 			p1 = a * (f - h);
 			p2 = (a + b) * h;
@@ -184,17 +201,19 @@ public class LinkedMatrix {
 			t = new LinkedMatrixNode(p3 + p4);
 			u = new LinkedMatrixNode(p5 + p1 - p3 - p7);
 
-			r.east  = s;
+			r.east = s;
 			r.south = t;
-			s.west  = r;
+			s.west = r;
 			s.south = u;
 			t.north = r;
-			t.east  = u;
-			u.west  = t;
+			t.east = u;
+			u.west = t;
 			u.north = s;
 
 			return new LinkedMatrix(r);
 		}
+
+		// Split the matrices down to quarters
 		LinkedMatrix a, b, c, d, e, f, g, h;
 		a = x;
 		b = a.split_vertical();
@@ -206,6 +225,7 @@ public class LinkedMatrix {
 		g = e.split_horizontal();
 		h = f.split_horizontal();
 
+		// Essentially the base case above but just in recursive mode
 		LinkedMatrix p1, p2, p3, p4, p5, p6, p7;
 		p1 = multiply(a, subtract(f, h));
 		p2 = multiply(add(a, b), h);
@@ -214,17 +234,31 @@ public class LinkedMatrix {
 		p5 = multiply(add(a, d), add(e, h));
 		p6 = multiply(subtract(b, d), add(g, h));
 		p7 = multiply(subtract(a, c), add(e, f));
-		
+
 		LinkedMatrix r, s, t, u;
 		r = add(subtract(add(p5, p4), p2), p6);
 		s = add(p1, p2);
 		t = add(p3, p4);
 		u = subtract(subtract(add(p5, p1), p3), p7);
 
+		// Stitch all of the resultant matrices together
 		return compose(r, s, t, u);
 	}
 
-	public static LinkedMatrix compose(LinkedMatrix r, LinkedMatrix s, LinkedMatrix t, LinkedMatrix u) {
+	/**
+	 * Builds up the 2D array with the 4 submatrices. It runs quickly through the
+	 * 4 sub-matrices and links them up appropriately and returns the the Top
+	 * Left Matrix
+	 *
+	 * @param r - Top Left Matrix
+	 * @param s - Top Right Matrix
+	 * @param t - Bottom Left Matrix
+	 * @param u - Bottom Right Matrix
+	 *
+	 * @return A combined matrix
+	 */
+	private static LinkedMatrix compose(LinkedMatrix r, LinkedMatrix s, LinkedMatrix t, LinkedMatrix u) {
+		// Like stitching a cloth
 		LinkedMatrixNode rcloth = r.root;
 		LinkedMatrixNode scloth = s.root;
 
@@ -232,7 +266,7 @@ public class LinkedMatrix {
 		LinkedMatrixNode ucloth = u.root;
 
 		// Stitch the top halves together (R |u| S) |u| (T |u| U)
-		while(rcloth.east != null && tcloth.east != null) {
+		while (rcloth.east != null && tcloth.east != null) {
 			rcloth = rcloth.east;
 			tcloth = tcloth.east;
 		}
@@ -254,14 +288,14 @@ public class LinkedMatrix {
 
 		rcloth = r.root;
 		// Need to traverse down to the bottom of the top cloth
-		while(rcloth.south != null) {
+		while (rcloth.south != null) {
 			rcloth = rcloth.south;
 		}
 
 		tcloth = t.root;
 
 		// Now stich them horizontally together
-		while(rcloth != null && tcloth != null) {
+		while (rcloth != null && tcloth != null) {
 			rcloth.south = tcloth;
 			tcloth.north = rcloth;
 
@@ -273,15 +307,38 @@ public class LinkedMatrix {
 		return new LinkedMatrix(r.root);
 	}
 
+	/**
+	 * Stub function
+	 *
+	 * @param a
+	 * @param b
+	 * @return
+	 */
 	public static LinkedMatrix subtract(LinkedMatrix a, LinkedMatrix b) {
 		return matrix_alu(a, b, false);
 	}
 
+	/**
+	 * Stub function
+	 *
+	 * @param a
+	 * @param b
+	 * @return
+	 */
 	public static LinkedMatrix add(LinkedMatrix a, LinkedMatrix b) {
 		return matrix_alu(a, b, true);
 	}
 
+	/**
+	 * Does simple addition or subtraction for the two matrices
+	 *
+	 * @param a
+	 * @param b
+	 * @param is_add
+	 * @return
+	 */
 	private static LinkedMatrix matrix_alu(LinkedMatrix a, LinkedMatrix b, boolean is_add) {
+		// TODO: Get rid of this and create nodes and link them up
 		int[][] temp = new int[a.width][a.height];
 
 		LinkedMatrixNode x = a.root;
@@ -291,14 +348,15 @@ public class LinkedMatrix {
 		LinkedMatrixNode yb = b.root;
 
 		int i = 0;
-		while(xb != null && yb != null ) {
+		while (xb != null && yb != null) {
 			int j = 0;
-			while(x != null && y != null) {
+			while (x != null && y != null) {
 
-				if(is_add)
+				if (is_add) {
 					temp[i][j] = x.value() + y.value();
-				else
+				} else {
 					temp[i][j] = x.value() - y.value();
+				}
 
 				x = x.east;
 				y = y.east;

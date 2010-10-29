@@ -4,9 +4,8 @@ import matrix.LinkedMatrix;
 import matrix.Matrix;
 
 /**
- *
+ * The driving benchmark class to test the linked matrix using strassens method
  * @author Matthew Johnston
- * @author Solomon Wagner
  */
 public class Main {
 
@@ -28,8 +27,10 @@ public class Main {
 		while (n < 2048) {
 
 			n *= 2;
+			a = 2;
 			for (int i = 0; i < number_of_tests; i++) {
 				count++;
+				a *= 2;
 				// Build the arrays
 
 				A = new int[n][n];
@@ -43,11 +44,6 @@ public class Main {
 					}
 				}
 
-
-				
-
-				
-
 				System.out.println("\n============================================================");
 				System.out.print("Test #");
 				System.out.println(count);
@@ -59,13 +55,26 @@ public class Main {
 				// =================================================================
 				Matrix p = new Matrix(A, A.length);
 				Matrix q = new Matrix(B, B.length);
-				
+
 				start = System.currentTimeMillis();
 				Matrix standard = Matrix.standard(p, q);
 				end = System.currentTimeMillis();
+
 				standard_time = (end - start);
 				System.out.println("Standard Time: " + standard_time + " (miliseconds)");
-				System.gc();
+				System.gc(); // Make a call to the garbage collector. Maybe it'll pick something up for once
+
+				// =================================================================
+				// Hybrid Test
+				// =================================================================
+
+				start = System.currentTimeMillis();
+				Matrix hybrid = Matrix.hybrid(p, q, a);
+				end = System.currentTimeMillis();
+
+				hybrid_time = (end - start);
+				System.out.println("Hybrid Time:   " + hybrid_time + " (miliseconds) cutoff: " + a);
+				System.gc(); // Make a call to the garbage collector. Maybe it'll pick something up for once
 
 				// =================================================================
 				// Strassen Test
@@ -76,20 +85,10 @@ public class Main {
 				start = System.currentTimeMillis();
 				LinkedMatrix strassen = LinkedMatrix.multiply(x, y);
 				end = System.currentTimeMillis();
+
 				strassen_time = (end - start);
 				System.out.println("Strassen Time: " + strassen_time + " (miliseconds)");
-				System.gc();
-
-				// =================================================================
-				// Hybrid Test
-				// =================================================================
-			/*
-				start = System.currentTimeMillis();
-				Matrix hybrid = Matrix.hybrid(x, y, a);
-				end = System.currentTimeMillis();
-				hybrid_time = (end - start);
-				System.out.println("Hybrid Time:   " + hybrid_time + " (miliseconds)");
-				 */
+				System.gc(); // Make a call to the garbage collector. Maybe it'll pick something up for once
 
 			}
 		}
