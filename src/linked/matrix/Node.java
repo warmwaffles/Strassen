@@ -4,16 +4,16 @@ package matrix;
  * A simple Node object that contains links to its neighbors
  * @author Matthew Johnston
  */
-public class LinkedMatrixNode {
+public class Node {
 	private int val;
-	public LinkedMatrixNode north, east, south, west;
+	public Node north, east, south, west;
 
 	/**
 	 * Builds a simple node that is not linked up with anything
 	 *
 	 * @param val - The value the node will hold
 	 */
-	public LinkedMatrixNode(int val) {
+	public Node(int val) {
 		this.val = val;
 		north    = null;
 		east     = null;

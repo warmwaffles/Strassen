@@ -1,4 +1,4 @@
-package matrix;
+package linked.matrix;
 
 /**
  * Implementing Strassen's method via linked lists
@@ -8,7 +8,7 @@ package matrix;
 public class LinkedMatrix {
 
 	private int width, height;
-	private LinkedMatrixNode root;
+	private Node root;
 
 	/**
 	 * Builds a null matrix
@@ -22,10 +22,10 @@ public class LinkedMatrix {
 	/**
 	 * Builds a matrix with the node N and then it will find the size of the matrix
 	 * auto-magically
-	 * 
+	 *
 	 * @param n
 	 */
-	public LinkedMatrix(LinkedMatrixNode n) {
+	public LinkedMatrix(Node n) {
 		root = n;
 		height = 0;
 		width = 0;
@@ -48,16 +48,16 @@ public class LinkedMatrix {
 		width = matrix.length;
 		height = matrix[0].length;
 
-		root = new LinkedMatrixNode(matrix[0][0]);
+		root = new Node(matrix[0][0]);
 
-		LinkedMatrixNode temp = null;
-		LinkedMatrixNode current = root;
-		LinkedMatrixNode top = root;
-		LinkedMatrixNode beginning = root;
+		Node temp = null;
+		Node current = root;
+		Node top = root;
+		Node beginning = root;
 
 		// Setup the first row
 		for (int i = 1; i < matrix[0].length; i++) {
-			temp = new LinkedMatrixNode(matrix[0][i]);
+			temp = new Node(matrix[0][i]);
 
 			temp.west = current;
 			current.east = temp;
@@ -68,7 +68,7 @@ public class LinkedMatrix {
 		for (int i = 1; i < matrix.length; i++) {
 			top = beginning;
 			for (int j = 0; j < matrix[i].length; j++) {
-				temp = new LinkedMatrixNode(matrix[i][j]);
+				temp = new Node(matrix[i][j]);
 
 				// If we are not at the beginning of a new row
 				if (j != 0) {
@@ -97,7 +97,7 @@ public class LinkedMatrix {
 	 * height appropriately.
 	 */
 	private void compute_size() {
-		LinkedMatrixNode t = root;
+		Node t = root;
 		height = 0;
 		width = 0;
 
@@ -121,12 +121,12 @@ public class LinkedMatrix {
 	 */
 	public LinkedMatrix split_vertical() {
 		int size = width / 2;
-		LinkedMatrixNode t = root;
+		Node t = root;
 		for (int i = 0; i < size; i++) {
 			t = t.east;
 		}
 
-		LinkedMatrixNode new_root = t;
+		Node new_root = t;
 		while (t != null) {
 			t.west.east = null;
 			t.west = null;
@@ -147,12 +147,12 @@ public class LinkedMatrix {
 	private LinkedMatrix split_horizontal() {
 		int size = height / 2;
 
-		LinkedMatrixNode t = root;
+		Node t = root;
 		for (int i = 0; i < size; i++) {
 			t = t.south;
 		}
 
-		LinkedMatrixNode new_root = t;
+		Node new_root = t;
 
 		while (t != null) {
 			t.north.south = null;
@@ -195,11 +195,11 @@ public class LinkedMatrix {
 			p6 = (b - d) * (g + h);
 			p7 = (a - c) * (e + f);
 
-			LinkedMatrixNode r, s, t, u;
-			r = new LinkedMatrixNode(p5 + p4 - p2 + p6);
-			s = new LinkedMatrixNode(p1 + p2);
-			t = new LinkedMatrixNode(p3 + p4);
-			u = new LinkedMatrixNode(p5 + p1 - p3 - p7);
+			Node r, s, t, u;
+			r = new Node(p5 + p4 - p2 + p6);
+			s = new Node(p1 + p2);
+			t = new Node(p3 + p4);
+			u = new Node(p5 + p1 - p3 - p7);
 
 			r.east = s;
 			r.south = t;
@@ -259,11 +259,11 @@ public class LinkedMatrix {
 	 */
 	private static LinkedMatrix compose(LinkedMatrix r, LinkedMatrix s, LinkedMatrix t, LinkedMatrix u) {
 		// Like stitching a cloth
-		LinkedMatrixNode rcloth = r.root;
-		LinkedMatrixNode scloth = s.root;
+		Node rcloth = r.root;
+		Node scloth = s.root;
 
-		LinkedMatrixNode tcloth = t.root;
-		LinkedMatrixNode ucloth = u.root;
+		Node tcloth = t.root;
+		Node ucloth = u.root;
 
 		// Stitch the top halves together (R |u| S) |u| (T |u| U)
 		while (rcloth.east != null && tcloth.east != null) {
@@ -341,11 +341,11 @@ public class LinkedMatrix {
 		// TODO: Get rid of this and create nodes and link them up
 		int[][] temp = new int[a.width][a.height];
 
-		LinkedMatrixNode x = a.root;
-		LinkedMatrixNode xb = a.root;
+		Node x = a.root;
+		Node xb = a.root;
 
-		LinkedMatrixNode y = b.root;
-		LinkedMatrixNode yb = b.root;
+		Node y = b.root;
+		Node yb = b.root;
 
 		int i = 0;
 		while (xb != null && yb != null) {
@@ -375,7 +375,7 @@ public class LinkedMatrix {
 	public String toString() {
 		String s = "Begin Matrix\n   Width:  " + width + "\n   Height: " + height + "\n";
 
-		LinkedMatrixNode t = root, beginning = root;
+		Node t = root, beginning = root;
 		while (beginning != null) {
 			t = beginning;
 			beginning = beginning.south;
