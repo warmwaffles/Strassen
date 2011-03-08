@@ -41,9 +41,9 @@ public class LinkedMatrix {
 		this();
 
 		// If the programmer was dumb
-		if (matrix == null || matrix.length < 1) {
+		if (matrix == null || matrix.length < 1)
 			return;
-		}
+
 
 		width = matrix.length;
 		height = matrix[0].length;
@@ -122,11 +122,13 @@ public class LinkedMatrix {
 	public LinkedMatrix split_vertical() {
 		int size = width / 2;
 		Node t = root;
+
 		for (int i = 0; i < size; i++) {
 			t = t.east;
 		}
 
 		Node new_root = t;
+
 		while (t != null) {
 			t.west.east = null;
 			t.west = null;
@@ -148,9 +150,10 @@ public class LinkedMatrix {
 		int size = height / 2;
 
 		Node t = root;
-		for (int i = 0; i < size; i++) {
+
+		for (int i = 0; i < size; i++)
 			t = t.south;
-		}
+
 
 		Node new_root = t;
 
@@ -288,9 +291,9 @@ public class LinkedMatrix {
 
 		rcloth = r.root;
 		// Need to traverse down to the bottom of the top cloth
-		while (rcloth.south != null) {
+		while (rcloth.south != null)
 			rcloth = rcloth.south;
-		}
+
 
 		tcloth = t.root;
 
@@ -352,22 +355,23 @@ public class LinkedMatrix {
 			int j = 0;
 			while (x != null && y != null) {
 
-				if (is_add) {
+				if (is_add)
 					temp[i][j] = x.value() + y.value();
-				} else {
+				else
 					temp[i][j] = x.value() - y.value();
-				}
 
 				x = x.east;
 				y = y.east;
 				j++;
 			}
+
 			xb = xb.south;
 			yb = yb.south;
 			x = xb;
 			y = yb;
 			i++;
 		}
+
 		return new LinkedMatrix(temp);
 	}
 
@@ -377,14 +381,18 @@ public class LinkedMatrix {
 
 		Node t = root, beginning = root;
 		while (beginning != null) {
+
 			t = beginning;
 			beginning = beginning.south;
+
 			while (t != null) {
 				s += " [" + t.value() + "] ";
 				t = t.east;
 			}
+
 			s += "\n";
 		}
+
 		s += "End Matrix\n";
 
 		return s;
