@@ -1,4 +1,4 @@
-package matrix;
+package linked.matrix;
 
 /**
  * A simple Node object that contains links to its neighbors
